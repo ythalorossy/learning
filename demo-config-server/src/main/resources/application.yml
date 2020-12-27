@@ -1,0 +1,14 @@
+server:
+  port: 8888
+
+#security configuration will be provided by environment variables
+
+spring:
+  application:
+    name: demo-config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/ythalorossy/spring-config-server.git
+          skip-ssl-validation: true

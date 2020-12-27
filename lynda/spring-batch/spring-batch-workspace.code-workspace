@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "linkedin-batch"
+		},
+		{
+			"name": "linkedin-batch-v2",
+			"path": "linkedin-batch-v2"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic"
+	}
+}

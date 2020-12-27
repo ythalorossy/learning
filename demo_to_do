@@ -1,0 +1,25 @@
+
+	
+- demo-config-server
+	- k8s
+		- deployment: demo-config-server	(ok)
+		- namespace: demo			(ok)
+		- service: demo-config-server 8888	(ok)
+		- secrets				(ok)
+			- envs:
+				SECURITY_USER_NAME
+				SECURITY_USER_PASSWORD
+	- git repo (ok)
+	- test update the configurations on git (ok)
+
+	
+- demo
+	- Change the app to use the config server instead of local files	(ok)
+		- envs:
+			SPRING_CLOUD_CONFIG_URI
+			SPRING_CLOUD_CONFIG_USERNAME
+			SPRING_CLOUD_CONFIG_PASSWORD
+	- set up client config server pointing to k8s service	(ok)
+	- recreate the image	(ok)
+	- update the k8s deployment	(ok)
+
