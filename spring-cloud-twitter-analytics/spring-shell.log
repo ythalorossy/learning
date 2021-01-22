@@ -1,0 +1,11 @@
+// dataflow 1.2.0.RELEASE log opened at 2021-01-14 22:23:41
+stream create tweets --definition "twitterstream --consumerKey=pNFzspwQYhjD2YKGI2wStBDUD --consumerSecret=BgJK0YkuxDR1uYdXqmseLwyB8znevotsEPfL1vc5NiOL4kKTVj --accessToken=73236654-CSkBGGaDT469tXS15DtrxtOcfkyOmu9hFhUAOmmj7 --accessTokenSecret=qBaFdI3nLvPsEELTTSdJkKnfU6jEzK1kk8c3UxoF6cOuY | log"
+stream create tweetlang  --definition ":tweets.twitterstream > counter --counter.name=language --counter.tag.expression.lang=#jsonPath(payload,'$..lang')" --deploy
+stream create tagcount  --definition ":tweets.twitterstream > counter --counter.name=hashtags --counter.tag.expression.htag=#jsonPath(payload,'$.entities.hashtags[*].text')" --deploy
+stream deploy tweets
+stream list
+stream create tweetlocation  --definition ":tweets.twitterstream > counter --counter.name=location --counter.tag.expression.loc=#jsonPath(payload,'$..location')" --deploy
+stream list
+stream list
+stream list
+stream list

@@ -1,0 +1,44 @@
+spring:
+  cloud:
+    dataflow:
+      security:
+        authorization:
+          provider-role-mappings:
+            dataflow-server-enterprise:
+              map-oauth-scopes: true
+              role-mappings:
+                ROLE_VIEW: dataflow.view
+                ROLE_CREATE: dataflow.create
+                ROLE_MANAGE: dataflow.manage
+                ROLE_DEPLOY: dataflow.deploy
+                ROLE_DESTROY: dataflow.destroy
+                ROLE_MODIFY: dataflow.modify
+                ROLE_SCHEDULE: dataflow.schedule
+  security:
+    oauth2:
+      client:
+        registration:
+          dataflow-server-enterprise:
+            provider: azure
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            client-id: cba3e49f-bcc1-4dea-b5d5-b6ce98c8ce56
+            client-secret: 9h.X8Yn3~IpnmVU_3rMWe12bP4~Mu5naTZ
+            scope:
+            - openid
+            - profile
+            - email
+            - offline_access
+            - api://cba3e49f-bcc1-4dea-b5d5-b6ce98c8ce56/dataflow.view
+            # - api://cba3e49f-bcc1-4dea-b5d5-b6ce98c8ce56/dataflow.deploy
+            # - api://cba3e49f-bcc1-4dea-b5d5-b6ce98c8ce56/dataflow.destroy
+            # - api://cba3e49f-bcc1-4dea-b5d5-b6ce98c8ce56/dataflow.manage
+            # - api://cba3e49f-bcc1-4dea-b5d5-b6ce98c8ce56/dataflow.modify
+            # - api://cba3e49f-bcc1-4dea-b5d5-b6ce98c8ce56/dataflow.schedule
+            # - api://cba3e49f-bcc1-4dea-b5d5-b6ce98c8ce56/dataflow.create
+        provider:
+          azure:
+            issuer-uri: https://login.microsoftonline.com/ca199a01-834d-48b2-bf7a-a29bc3df1cb1/v2.0
+            user-name-attribute: name
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://login.microsoftonline.com/ca199a01-834d-48b2-bf7a-a29bc3df1cb1/discovery/v2.0/keys

@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"name": "usage-detail-sender-rabbit",
+			"path": "usage-detail-sender-rabbit"
+		},
+		{
+			"name": "usage-cost-processor-rabbit",
+			"path": "usage-cost-processor-rabbit"
+		},
+		{
+			"path": "usage-cost-logger"
+		},
+		{
+			"path": "stream-functional"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic"
+	}
+}

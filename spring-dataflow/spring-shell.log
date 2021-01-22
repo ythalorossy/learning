@@ -1,0 +1,39 @@
+// dataflow 1.2.0.RELEASE log opened at 2021-01-16 22:45:52
+help
+stream list
+// [failed] stream info -name yross
+stream info yross
+help
+help stream create
+help
+runtime apps
+help stream scale app instances 
+// [failed] stream scale app instances -name yross --applicationName usage-cost-logger --count 2
+stream list
+// [failed] stream scale app instances --name yross --applicationName usage-cost-logger --count 2
+// [failed] stream scale app instances --name yross --applicationName usage-cost-processor-rabbit --count 4
+// [failed] stream scale app instances --name yross --applicationName usage-cost-processor-rabbit --count 1
+// dataflow 1.2.0.RELEASE log opened at 2021-01-16 23:06:17
+stream manifest --name yross
+help 
+help app register
+help app register usage-detail-sender-rabbit
+help app register -name usage-detail-sender-rabbit -type source -uri maven://io.spring.dataflow.sample:usage-detail-sender-rabbit:jar:0.0.1-SNAPSHOT 
+help app register name usage-detail-sender-rabbit type source uri maven://io.spring.dataflow.sample:usage-detail-sender-rabbit:jar:0.0.1-SNAPSHOT 
+app register --name usage-detail-sender-rabbit --type source --uri maven://io.spring.dataflow.sample:usage-detail-sender-rabbit:jar:0.0.1-SNAPSHOT 
+app register --name usage-cost-processor-rabbit --type processor --uri maven://io.spring.dataflow.sample:usage-cost-processor-rabbit:jar:0.0.1-SNAPSHOT 
+app register --name usage-cost-logger --type sink --uri maven://io.spring.dataflow:usage-cost-logger:jar:0.0.1-SNAPSHOT 
+help stream create
+stream create yross-stream --definition "usage-detail-sender-rabbit | usage-cost-processor-rabbit | usage-cost-logger"
+stream list
+help stream 
+help stream deploy
+help stream deploy yross-stream
+stream deploy yross-stream
+stream list
+stream list
+stream list
+stream list
+stream list
+stream list
+stream list

@@ -1,0 +1,10 @@
+{
+	"folders": [
+		{
+			"path": "restful-web-services"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic"
+	}
+}
