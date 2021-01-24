@@ -14,13 +14,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter  implements 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .csrf().disable() // Disabled to accept request from http client
-            ;  
+        .authorizeRequests().antMatchers("/h2-console/**").permitAll()
+        // .and().csrf().ignoringAntMatchers("/h2-console/**")
+        // .and().csrf().ignoringAntMatchers("/jpa/**")
+        .and().csrf().disable()
+        .headers().frameOptions().sameOrigin();
     }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedMethods("*");
+        registry
+            .addMapping("/**")
+            .allowedMethods("*");
     }
 
 }
