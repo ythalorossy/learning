@@ -2,6 +2,30 @@
 	"folders": [
 		{
 			"path": "restful-web-services"
+		},
+		{
+			"name": "limit-service",
+			"path": "limit-service"
+		},
+		{
+			"name": "spring-cloud-config-server",
+			"path": "spring-cloud-config-server"
+		},
+		{
+			"name": "currency-exchange-service",
+			"path": "currency-exchange-service"
+		},
+		{
+			"name": "currency-conversion-service",
+			"path": "currency-conversion-service"
+		},
+		{
+			"name": "naming-server",
+			"path": "naming-server"
+		},
+		{
+			"name": "api-gateway",
+			"path": "api-gateway"
 		}
 	],
 	"settings": {
