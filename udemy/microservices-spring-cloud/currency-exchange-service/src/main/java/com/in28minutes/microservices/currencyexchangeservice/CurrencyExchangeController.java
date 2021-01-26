@@ -3,6 +3,8 @@ package com.in28minutes.microservices.currencyexchangeservice;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CurrencyExchangeController {
     
+    Logger logger = LoggerFactory.getLogger(CurrencyExchangeController.class);
+
     private Environment environment;
 
     private CurrencyExchangeRepository currencyExchangeRepository;
@@ -30,6 +34,8 @@ public class CurrencyExchangeController {
 
         String port = environment.getProperty("local.server.port");
         
+            logger.info("retrieveExchangeValue called with {} and {}", from, to);
+
         CurrencyExchange currencyExchange = currencyExchangeRepository.findByFromAndTo(from, to);
 
         if (Objects.isNull(currencyExchange)) {

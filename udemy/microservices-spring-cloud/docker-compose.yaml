@@ -1,0 +1,98 @@
+version: '3.7'
+
+services:
+
+  zipkin-server:
+    image: openzipkin/zipkin:latest
+    container_name: zipkin-server
+    hostname: zipkin-server
+    mem_limit: 300m
+    ports:
+      - "9411:9411"
+    networks:
+      - currency-network
+    depends_on: 
+      - rabbitmq
+    environment: 
+      - RABBIT_URI=amqp://guest:guest@rabbitmq:5672
+
+  rabbitmq:
+    image: rabbitmq:3.8.11-management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    mem_limit: 300m
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - currency-network
+
+  naming-server:
+    image: ythalorossy/mmv2-naming-server:0.0.1-SNAPSHOT
+    container_name: naming-server
+    hostname: naming-server
+    mem_limit: 700m
+    ports:
+      - "8761:8761"
+    networks:
+      - currency-network
+
+  currency-exchange:
+    image: ythalorossy/mmv2-currency-exchange-service:0.0.1-SNAPSHOT
+    container_name: currency-exchange
+    mem_limit: 700m
+    ports:
+      - "8000:8000"
+    networks:
+      - currency-network
+    depends_on:
+      - naming-server
+      - rabbitmq
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://naming-server:8761/eureka
+        -Dspring.zipkin.baseurl=http://zipkin-server:9411
+      - RABBIT_URI=amqp://guest:guest@rabbitmq:5672
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_ZIPKIN_SENDER_TYPE=rabbit
+
+  currency-conversion:
+    image: ythalorossy/mmv2-currency-conversion-service:0.0.1-SNAPSHOT
+    container_name: currency-conversion
+    mem_limit: 700m
+    ports:
+      - "8100:8100"
+    networks:
+      - currency-network
+    depends_on:
+      - naming-server
+      - rabbitmq
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://naming-server:8761/eureka
+        -Dspring.zipkin.baseurl=http://zipkin-server:9411
+      - RABBIT_URI=amqp://guest:guest@rabbitmq:5672
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_ZIPKIN_SENDER_TYPE=rabbit
+        
+  api-gateway:
+    image: ythalorossy/mmv2-api-gateway:0.0.1-SNAPSHOT
+    container_name: api-gateway
+    mem_limit: 700m
+    ports:
+      - "8765:8765"
+    networks:
+      - currency-network
+    depends_on:
+      - naming-server
+      - rabbitmq
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://naming-server:8761/eureka
+        -Dspring.zipkin.baseurl=http://zipkin-server:9411
+      - RABBIT_URI=amqp://guest:guest@rabbitmq:5672
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_ZIPKIN_SENDER_TYPE=rabbit
+
+networks:
+  currency-network:
