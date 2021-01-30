@@ -30,6 +30,7 @@ import org.springframework.batch.item.validator.BeanValidatingItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
@@ -43,8 +44,8 @@ public class LinkedinBatchV2Application {
 	private static final int _CHUNK_SIZE = 10;
 
 	private static final String DATA_SHIPPED_ORDERS_CSV_PATH = "data/shipped_orders.csv";
-	private static final String DATA_SHIPPED_ORDERS_OUTPUT_CSV = "/home/yross/Documents/learning/lynda/spring-batch/data/shipped_orders_output.csv";
-	private static final String DATA_SHIPPED_ORDERS_OUTPUT_JSON = "/home/yross/Documents/learning/lynda/spring-batch/data/shipped_orders_output.json";
+	private static final String DATA_SHIPPED_ORDERS_OUTPUT_CSV = "/home/yross/learning/lynda/spring-batch/data/shipped_orders_output.csv";
+	private static final String DATA_SHIPPED_ORDERS_OUTPUT_JSON = "/home/yross/learning/lynda/spring-batch/data/shipped_orders_output.json";
 
 	public static String[] tokens = new String[] { "order_id", "first_name", "last_name", "email", "cost", "item_id",
 			"item_name", "ship_date" };
@@ -215,11 +216,17 @@ public class LinkedinBatchV2Application {
 		return executor;
 	}
 
+	/**
+	 * Convert a list of {@link Order} in {@link TrackedOrder}
+	 * @return
+	 * @throws Exception
+	 */
 	@Bean
-	public Step chunkBasedStep() throws Exception {
+	public Step orderToTrackedOrderChunkBasedStep() throws Exception {
 		return this.stepBuilderFactory.get("chunkBasedStep")
 				.<Order, TrackedOrder>chunk(_CHUNK_SIZE)
 				.reader(itemReaderJdbcPaging())
+				.listener(new CustomItemWriteListerner())
 				// .processor(orderValidatingItemProcessor())
 				// .processor(trackedOrderItemProcessor())
 				.faultTolerant()
@@ -231,6 +238,30 @@ public class LinkedinBatchV2Application {
 				.listener(new CustomRetryListener())
 				.processor(compositeItemProcessor())
 				.writer(itemWriterJsonFile())
+				.listener(new CustomItemWriteListerner())
+				.taskExecutor(taskExecutor())
+				.build();
+	}
+
+	/**
+	 * Convert a list of {@link Order} in {@link Order}
+	 * @return
+	 * @throws Exception
+	 */
+	@Bean
+	public Step orderToOrderdOrderChunkBasedStep() throws Exception {
+		return this.stepBuilderFactory.get("chunkBasedStep")
+				.<Order, Order>chunk(_CHUNK_SIZE)
+				.reader(itemReaderJdbcPaging())
+				.processor(orderValidatingItemProcessor())
+				.faultTolerant()
+				// .skip(OrderProcessingException.class)
+				// .skipLimit(5)	// For the entire processing
+				//.listener(new CustomSkipListener())
+				.retry(OrderProcessingException.class)
+				.retryLimit(3)	// For specifc item. Retries x times that specif item
+				.listener(new CustomRetryListener())
+				.writer(itemWriterFlatFile())
 				.taskExecutor(taskExecutor())
 				.build();
 	}
@@ -239,12 +270,15 @@ public class LinkedinBatchV2Application {
 	@Bean
 	public Job job() throws Exception {
 		return this.jobBuilderFactory.get("job")
-			.start(chunkBasedStep())
+			// .start(orderToTrackedOrderChunkBasedStep())
+			.start(orderToOrderdOrderChunkBasedStep())
 			.build();
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(LinkedinBatchV2Application.class, args);
+		ConfigurableApplicationContext context = SpringApplication.run(LinkedinBatchV2Application.class, args);
+		int exitCode = SpringApplication.exit(context);
+		System.exit(exitCode);
 	}
 
 }

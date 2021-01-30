@@ -9,7 +9,7 @@ public class FreeShippingItemProcessor implements ItemProcessor<TrackedOrder, Tr
     @Override
     public TrackedOrder process(TrackedOrder item) throws Exception {
         
-        if (item.getCost().compareTo(new BigDecimal("80")) == 1) {
+        if (item.getCost().compareTo(new BigDecimal("50")) == 1) {
             item.setFreeShipping(true);
         }
 
