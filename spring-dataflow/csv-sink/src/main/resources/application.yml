@@ -1,0 +1,12 @@
+
+spring:
+  cloud:
+    stream:
+      function:
+        definition: sink
+      bindings:
+        sink-in-0:
+          destination: stream-0003.http-request
+          group: stream-0003
+          consumer:
+            batchMode: true
